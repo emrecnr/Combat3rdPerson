@@ -55,6 +55,15 @@ namespace TP.Inputs
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Look"",
+                    ""type"": ""Value"",
+                    ""id"": ""9d90e7a8-59ae-4d6b-a54a-e42ae048f591"",
+                    ""expectedControlType"": ""Vector2"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -156,6 +165,28 @@ namespace TP.Inputs
                     ""action"": ""Dodge"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""5204db21-8734-4fd9-b08d-539a114cf5b4"",
+                    ""path"": ""<Mouse>/delta"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MouseandKeyboard"",
+                    ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8a4067f1-ddc4-4071-ab76-db15cae0202b"",
+                    ""path"": ""<Gamepad>/rightStick"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Look"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -195,6 +226,7 @@ namespace TP.Inputs
             m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
             m_Player_Jump = m_Player.FindAction("Jump", throwIfNotFound: true);
             m_Player_Dodge = m_Player.FindAction("Dodge", throwIfNotFound: true);
+            m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -259,6 +291,7 @@ namespace TP.Inputs
         private readonly InputAction m_Player_Move;
         private readonly InputAction m_Player_Jump;
         private readonly InputAction m_Player_Dodge;
+        private readonly InputAction m_Player_Look;
         public struct PlayerActions
         {
             private @InputController m_Wrapper;
@@ -266,6 +299,7 @@ namespace TP.Inputs
             public InputAction @Move => m_Wrapper.m_Player_Move;
             public InputAction @Jump => m_Wrapper.m_Player_Jump;
             public InputAction @Dodge => m_Wrapper.m_Player_Dodge;
+            public InputAction @Look => m_Wrapper.m_Player_Look;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -284,6 +318,9 @@ namespace TP.Inputs
                 @Dodge.started += instance.OnDodge;
                 @Dodge.performed += instance.OnDodge;
                 @Dodge.canceled += instance.OnDodge;
+                @Look.started += instance.OnLook;
+                @Look.performed += instance.OnLook;
+                @Look.canceled += instance.OnLook;
             }
 
             private void UnregisterCallbacks(IPlayerActions instance)
@@ -297,6 +334,9 @@ namespace TP.Inputs
                 @Dodge.started -= instance.OnDodge;
                 @Dodge.performed -= instance.OnDodge;
                 @Dodge.canceled -= instance.OnDodge;
+                @Look.started -= instance.OnLook;
+                @Look.performed -= instance.OnLook;
+                @Look.canceled -= instance.OnLook;
             }
 
             public void RemoveCallbacks(IPlayerActions instance)
@@ -337,6 +377,7 @@ namespace TP.Inputs
             void OnMove(InputAction.CallbackContext context);
             void OnJump(InputAction.CallbackContext context);
             void OnDodge(InputAction.CallbackContext context);
+            void OnLook(InputAction.CallbackContext context);
         }
     }
 }
