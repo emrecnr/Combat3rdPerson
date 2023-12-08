@@ -6,45 +6,62 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
-public class InputReader : MonoBehaviour, InputController.IPlayerActions
+namespace TP.CombatSystem.Inputs
 {
-    private InputController _inputs;
-
-    public Vector2 MovementValue { get; private set; }
-
-    public event Action JumpEvent;
-    public event Action DodgeEvent;
-
-    private void OnEnable()
+    public class InputReader : MonoBehaviour, InputController.IPlayerActions
     {
-        _inputs = new InputController();
-        _inputs.Player.SetCallbacks(this);
-        _inputs.Enable();
-    }
-    private void OnDisable()
-    {
-        _inputs.Disable();
-    }
+        private InputController _inputs;
 
-    public void OnDodge(InputAction.CallbackContext context)
-    {
-        if (!context.performed) return;
-        DodgeEvent?.Invoke();
-    }
+        public Vector2 MovementValue { get; private set; }
 
-    public void OnJump(InputAction.CallbackContext context)
-    {
-        if (!context.performed) return;
-        JumpEvent?.Invoke();
-    }
+        public event Action JumpEvent;
+        public event Action DodgeEvent;
+        public event Action TargetEvent;
+        public event Action CancelEvent;
 
-    public void OnMove(InputAction.CallbackContext context)
-    {
-        MovementValue = context.ReadValue<Vector2>();
-    }
+        private void OnEnable()
+        {
+            _inputs = new InputController();
+            _inputs.Player.SetCallbacks(this);
+            _inputs.Enable();
+        }
+        private void OnDisable()
+        {
+            _inputs.Disable();
+        }
 
-    public void OnLook(InputAction.CallbackContext context)
-    {
-        
+        public void OnDodge(InputAction.CallbackContext context)
+        {
+            if (!context.performed) return;
+            DodgeEvent?.Invoke();
+        }
+
+        public void OnJump(InputAction.CallbackContext context)
+        {
+            if (!context.performed) return;
+            JumpEvent?.Invoke();
+        }
+
+        public void OnMove(InputAction.CallbackContext context)
+        {
+            MovementValue = context.ReadValue<Vector2>();
+        }
+
+        public void OnLook(InputAction.CallbackContext context)
+        {
+
+        }
+
+        public void OnTarget(InputAction.CallbackContext context)
+        {
+            if(!context.performed) return;
+            TargetEvent?.Invoke();
+        }
+
+        public void OnCancel(InputAction.CallbackContext context)
+        {
+            if(!context.performed) return;
+            CancelEvent?.Invoke();
+        }
     }
 }

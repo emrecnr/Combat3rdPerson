@@ -2,12 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class PlayerBaseState : State
+namespace TP.CombatSystem.StateMachines.Player
 {
-   protected PlayerStateMachine stateMachine;
+    public abstract class PlayerBaseState : State
+    {
+        protected PlayerStateMachine stateMachine;
 
-   public PlayerBaseState(PlayerStateMachine stateMachine)
-   {
-        this.stateMachine = stateMachine;
-   }
+        public PlayerBaseState(PlayerStateMachine stateMachine)
+        {
+            this.stateMachine = stateMachine;
+        }
+    }
 }
