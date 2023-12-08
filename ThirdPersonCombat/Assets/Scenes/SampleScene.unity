@@ -445,7 +445,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &1500213321
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2370,9 +2370,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1485271315195291070}
   - component: {fileID: 1485271315205015736}
+  - component: {fileID: 1485271315205015739}
   - component: {fileID: 1485271315205015738}
   - component: {fileID: 1485271315205015737}
-  - component: {fileID: 1485271315205015739}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -3683,7 +3683,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: adfdd1b4945f3b2418fa74547db6135e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _inputReader: {fileID: 1485271315205015738}
+  <InputReader>k__BackingField: {fileID: 1485271315205015738}
+  <Controller>k__BackingField: {fileID: 1485271315205015739}
+  <FreeLookMovementSpeed>k__BackingField: 5
 --- !u!114 &1485271315205015738
 MonoBehaviour:
   m_ObjectHideFlags: 0
