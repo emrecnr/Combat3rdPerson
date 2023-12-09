@@ -11,17 +11,14 @@ namespace TP.Combat.StateMachines
         public PlayerTargetingState(PlayerStateMachine stateMachine) : base(stateMachine){}
 
         private readonly int TargetingBlendTree = Animator.StringToHash("TargetingBlendTree");
+        private readonly int TargetingForward = Animator.StringToHash("TargetingForwardSpeed");
+        private readonly int TargetingRight = Animator.StringToHash("TargetingRightSpeed");
 
 
         public override void Enter()
         {
             stateMachine.InputReader.CancelEvent += OnCancelHandler;
             stateMachine.Animator.Play(TargetingBlendTree);
-        }
-
-        public override void Exit()
-        {           
-            stateMachine.InputReader.CancelEvent -= OnCancelHandler;            
         }
 
         public override void Tick(float deltaTime)
@@ -31,7 +28,49 @@ namespace TP.Combat.StateMachines
                 stateMachine.SwitchState(new PlayerFreeLookState(stateMachine));
                 return;
             }
+            Vector3 movement = CalculateMovement();
+            Move(movement * stateMachine.TargetingMovementSpeed, deltaTime);
+            UpdateAnimator(deltaTime);
+            FaceTarget();
+        }
 
+        public override void Exit()
+        {           
+            stateMachine.InputReader.CancelEvent -= OnCancelHandler;            
+        }
+
+       
+        protected Vector3 CalculateMovement()
+        {
+            Vector3 movement = new Vector3();
+            movement += stateMachine.transform.right * stateMachine.InputReader.MovementValue.x;
+            movement += stateMachine.transform.forward * stateMachine.InputReader.MovementValue.y;
+            return movement;
+        }
+        private void UpdateAnimator(float deltaTime)
+        {
+            // Forward:
+            if(stateMachine.InputReader.MovementValue.y == 0)
+            {
+                stateMachine.Animator.SetFloat(TargetingForward, 0 , 0.1f,deltaTime);
+            }
+                                
+            else
+            {
+                float value = stateMachine.InputReader.MovementValue.y > 0 ? 1f : -1f;
+                stateMachine.Animator.SetFloat(TargetingForward,value, 0.1f, deltaTime);
+            }
+            // Right:
+            if (stateMachine.InputReader.MovementValue.x == 0)
+            {
+                stateMachine.Animator.SetFloat(TargetingRight, 0, 0.1f, deltaTime);
+            }
+
+            else
+            {
+                float value = stateMachine.InputReader.MovementValue.x > 0 ? 1f : -1f;
+                stateMachine.Animator.SetFloat(TargetingRight, value, 0.1f, deltaTime);
+            }
         }
         private void OnCancelHandler()
         {

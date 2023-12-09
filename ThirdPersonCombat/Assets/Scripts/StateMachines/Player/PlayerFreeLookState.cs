@@ -10,7 +10,7 @@ namespace TP.CombatSystem.StateMachines.Player
     public class PlayerFreeLookState : PlayerBaseState
     {
         public PlayerFreeLookState(PlayerStateMachine stateMachine) : base(stateMachine) { }
-        
+
         private readonly int FreeLookSpeed = Animator.StringToHash("FreeLookSpeed");
         private readonly int FreeLookBlendTree = Animator.StringToHash("FreeLookBlendTree");
         private const float AnimatorDampTime = 0.1f;
@@ -29,14 +29,13 @@ namespace TP.CombatSystem.StateMachines.Player
 
         private void OnTargetHandler()
         {
-            if(!stateMachine.Targeter.SelectTarget()) return;
+            if (!stateMachine.Targeter.SelectTarget()) return;
             stateMachine.SwitchState(new PlayerTargetingState(stateMachine));
         }
         public override void Tick(float deltaTime)
         {
             Vector3 moveDirection = CalculateMovement();
-
-            stateMachine.Controller.Move(moveDirection * stateMachine.FreeLookMovementSpeed * deltaTime);
+            Move(moveDirection * stateMachine.FreeLookMovementSpeed, deltaTime);
 
             if (stateMachine.InputReader.MovementValue == Vector2.zero)
             {

@@ -9,6 +9,7 @@ namespace TP.CombatSystem.Combat.Target
     public class Targeter : MonoBehaviour
     {
         [SerializeField] private CinemachineTargetGroup cinemachineTarGro;
+
         private List<Target> _targetList = new List<Target>();
         public Target CurrentTarget {get; private set;}
 
@@ -29,13 +30,15 @@ namespace TP.CombatSystem.Combat.Target
                 TargetOnDestroyHandler(target);
             }
         }
-        public bool SelectTarget()
+
+        public bool SelectTarget() 
         {
             if (_targetList.Count == 0) return false;
            CurrentTarget = _targetList[0];
             cinemachineTarGro.AddMember(CurrentTarget.transform,1f,2f);
            return true;
         }
+
         public void Cancel()
         {
             if(CurrentTarget == null) return;
