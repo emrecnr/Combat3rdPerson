@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TP.Combat.StateMachines;
 using TP.CombatSystem.Combat;
 using TP.CombatSystem.StateMachines.Player;
 using UnityEngine;
@@ -10,6 +11,7 @@ namespace TP.CombatSystem.StateMachines.Player
     {
         private Attack _attack;
         private float previousFrameTime;
+        private bool alreadyAppliedForce;
         public PlayerAttackingState(PlayerStateMachine stateMachine,int attackId) : base(stateMachine)
         {
             _attack = stateMachine.Attacks[attackId];
@@ -31,15 +33,17 @@ namespace TP.CombatSystem.StateMachines.Player
             Move(deltaTime);
             FaceTarget();
             float normalizedTime = GetNormalizeTime();
-            if(normalizedTime > previousFrameTime && normalizedTime < 1f)
+            if(normalizedTime >= previousFrameTime && normalizedTime < 1f)
             {
+                if(normalizedTime >= _attack.ForceTime) TryApplyForce();
                 if(stateMachine.InputReader.IsAttacking)
-                {
-                    TryComboAttack(normalizedTime);
-                }
+                                    TryComboAttack(normalizedTime);                
             } 
             else{
-                //back to locomotion
+                if(stateMachine.Targeter.CurrentTarget != null)
+                        stateMachine.SwitchState(new PlayerTargetingState(stateMachine));
+                else
+                    stateMachine.SwitchState(new PlayerFreeLookState(stateMachine));
             }
             previousFrameTime = normalizedTime;
         }
@@ -48,6 +52,12 @@ namespace TP.CombatSystem.StateMachines.Player
             if(_attack.ComboStateIndex == -1) return;
             if(normalizedTime < _attack.ComboAttackTime) return;
             stateMachine.SwitchState(new PlayerAttackingState(stateMachine,_attack.ComboStateIndex));
+        }
+        private void TryApplyForce()
+        {
+            if(alreadyAppliedForce) return;
+            stateMachine.Receiver.AddForce(stateMachine.transform.forward* _attack.Force);
+            alreadyAppliedForce = true;
         }
         private float GetNormalizeTime()
         {
