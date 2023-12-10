@@ -2,14 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class StateMachines : MonoBehaviour
+namespace TP.CombatSystem.StateMachines
 {
-    public State currentState;
-
-    public void SwitchState(State newState)
+    public abstract class StateMachines : MonoBehaviour
     {
-        currentState?.Exit();
-        currentState = newState;
-        currentState?.Enter();
+        public State currentState;
+
+        public void SwitchState(State newState)
+        {
+            currentState?.Exit();
+            currentState = newState;
+            currentState?.Enter();
+        }
     }
 }

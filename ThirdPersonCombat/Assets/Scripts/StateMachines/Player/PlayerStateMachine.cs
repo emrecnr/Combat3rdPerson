@@ -1,24 +1,37 @@
 using System.Collections;
 using System.Collections.Generic;
+using TP.CombatSystem.Combat;
+using TP.CombatSystem.Combat.Target;
+using TP.CombatSystem.Inputs;
 using UnityEngine;
 
-public  class PlayerStateMachine : StateMachines
+namespace TP.CombatSystem.StateMachines.Player
 {
-    [field : SerializeField]public InputReader InputReader {get; private set;}
-    [field: SerializeField] public CharacterController Controller { get; private set; }
-    [field: SerializeField] public Animator Animator { get; private set; }
-    public Transform MainCameraTransform { get; private set; }
-    [field: SerializeField] public float FreeLookMovementSpeed{get; private set;}
-    [field: SerializeField] public float RotationDampSpeed { get; private set; }
-
-
-    private void Start()
+    public class PlayerStateMachine : StateMachines
     {
-        MainCameraTransform = Camera.main.transform;
-        SwitchState(new PlayerFreeLookState(this));
-    }
-    private void Update()
-    {
-        currentState.Tick(Time.deltaTime);
+        [field: SerializeField] public InputReader InputReader { get; private set; }
+        [field: SerializeField] public CharacterController Controller { get; private set; }
+        [field: SerializeField] public Animator Animator { get; private set; }
+        [field: SerializeField] public Targeter Targeter { get; private set; }
+        [field: SerializeField] public Attack[] Attacks { get; private set; }
+        [field: SerializeField] public ForceReceiver Receiver { get; private set; }
+        public Transform MainCameraTransform { get; private set; }
+        [field: SerializeField] public float FreeLookMovementSpeed { get; private set; }
+        [field: SerializeField] public float TargetingMovementSpeed { get; private set; }
+        [field: SerializeField] public float RotationDampSpeed { get; private set; }
+
+        private void Awake() {
+            
+        }
+        private void Start()
+        {
+            MainCameraTransform = Camera.main.transform;
+            SwitchState(new PlayerFreeLookState(this));
+        }
+        private void Update()
+        {
+            currentState.Tick(Time.deltaTime);
+        }
     }
 }
+

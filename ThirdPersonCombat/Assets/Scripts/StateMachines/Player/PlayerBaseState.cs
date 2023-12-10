@@ -1,13 +1,34 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Mathematics;
 using UnityEngine;
 
-public abstract class PlayerBaseState : State
+namespace TP.CombatSystem.StateMachines.Player
 {
-   protected PlayerStateMachine stateMachine;
+    public abstract class PlayerBaseState : State
+    {
+        protected PlayerStateMachine stateMachine;
+ 
+        public PlayerBaseState(PlayerStateMachine stateMachine)
+        {
+            this.stateMachine = stateMachine;
+        }
+        protected void Move(Vector3 motion, float deltaTime)
+        {
+            stateMachine.Controller.Move((motion + stateMachine.Receiver.Movement)* deltaTime);
+        }
+        protected void Move(float deltaTime)
+        {
+            Move(Vector3.zero,deltaTime);
+        }
+        protected void FaceTarget()
+        {
+            if(stateMachine.Targeter.CurrentTarget == null) return;
+            Vector3 lookPosition = stateMachine.Targeter.CurrentTarget.transform.position-
+                                    stateMachine.transform.position;
+            lookPosition.y = 0f;
+            stateMachine.transform.rotation = Quaternion.LookRotation(lookPosition);
+        }
 
-   public PlayerBaseState(PlayerStateMachine stateMachine)
-   {
-        this.stateMachine = stateMachine;
-   }
+    }
 }
