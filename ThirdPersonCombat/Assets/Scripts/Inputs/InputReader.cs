@@ -13,11 +13,13 @@ namespace TP.CombatSystem.Inputs
         private InputController _inputs;
 
         public Vector2 MovementValue { get; private set; }
+        public bool IsAttacking {get; private set;}
 
         public event Action JumpEvent;
         public event Action DodgeEvent;
         public event Action TargetEvent;
         public event Action CancelEvent;
+        
 
         private void OnEnable()
         {
@@ -62,6 +64,12 @@ namespace TP.CombatSystem.Inputs
         {
             if(!context.performed) return;
             CancelEvent?.Invoke();
+        }
+
+        public void OnAttack(InputAction.CallbackContext context)
+        {
+            if(context.performed) IsAttacking = true;
+            else if (context.canceled) IsAttacking = false;
         }
     }
 }

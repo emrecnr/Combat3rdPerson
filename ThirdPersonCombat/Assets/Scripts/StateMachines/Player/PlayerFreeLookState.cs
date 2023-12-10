@@ -34,6 +34,11 @@ namespace TP.CombatSystem.StateMachines.Player
         }
         public override void Tick(float deltaTime)
         {
+            if(stateMachine.InputReader.IsAttacking) 
+            {
+                stateMachine.SwitchState(new PlayerAttackingState(stateMachine,0));
+                return;
+            }
             Vector3 moveDirection = CalculateMovement();
             Move(moveDirection * stateMachine.FreeLookMovementSpeed, deltaTime);
 

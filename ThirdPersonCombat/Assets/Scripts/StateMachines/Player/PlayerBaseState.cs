@@ -17,6 +17,10 @@ namespace TP.CombatSystem.StateMachines.Player
         {
             stateMachine.Controller.Move((motion + stateMachine.Receiver.Movement)* deltaTime);
         }
+        protected void Move(float deltaTime)
+        {
+            Move(Vector3.zero,deltaTime);
+        }
         protected void FaceTarget()
         {
             if(stateMachine.Targeter.CurrentTarget == null) return;

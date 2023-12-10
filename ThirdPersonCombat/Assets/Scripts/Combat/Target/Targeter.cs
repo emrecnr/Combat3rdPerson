@@ -10,9 +10,15 @@ namespace TP.CombatSystem.Combat.Target
     {
         [SerializeField] private CinemachineTargetGroup cinemachineTarGro;
 
-        private List<Target> _targetList = new List<Target>();
-        public Target CurrentTarget {get; private set;}
+        private Camera mainCamera;
 
+        private List<Target> _targetList = new List<Target>();
+        public Target CurrentTarget { get; private set; }
+
+        private void Start()
+        {
+            mainCamera = Camera.main;
+        }
         private void OnTriggerEnter(Collider other) // Target in Range
         {
             if (other.TryGetComponent<Target>(out Target target))
@@ -20,7 +26,7 @@ namespace TP.CombatSystem.Combat.Target
                 _targetList.Add(target);
                 target.OnDestroyedEvent += TargetOnDestroyHandler;
             }
-                
+
         }
 
         private void OnTriggerExit(Collider other) // Target out range
@@ -31,24 +37,43 @@ namespace TP.CombatSystem.Combat.Target
             }
         }
 
-        public bool SelectTarget() 
+        public bool SelectTarget()
         {
             if (_targetList.Count == 0) return false;
-           CurrentTarget = _targetList[0];
-            cinemachineTarGro.AddMember(CurrentTarget.transform,1f,2f);
-           return true;
+
+            Target closestTarget = null;
+            float closestTargetDistance = Mathf.Infinity;
+            foreach (Target target in _targetList)
+            {
+                Vector2 viewPosition = mainCamera.WorldToViewportPoint(target.transform.position);
+                if (viewPosition.x < 0 || viewPosition.x > 1 || viewPosition.y < 0 || viewPosition.y > 1)
+                                                                                continue;
+
+                Vector2 toCenter = viewPosition - new Vector2(0.5f,0.5f);
+                if(toCenter.sqrMagnitude < closestTargetDistance)
+                {
+                    closestTarget = target;
+                    closestTargetDistance = toCenter.sqrMagnitude;
+                }    
+                if(closestTarget == null)
+                {
+                    return false;
+                } 
+            }
+            CurrentTarget = closestTarget;
+            cinemachineTarGro.AddMember(CurrentTarget.transform, 1f, 2f);
+            return true;
         }
 
         public void Cancel()
         {
-            if(CurrentTarget == null) return;
+            if (CurrentTarget == null) return;
             cinemachineTarGro.RemoveMember(CurrentTarget.transform);
             CurrentTarget = null;
         }
-        
         private void TargetOnDestroyHandler(Target target)
         {
-            if(CurrentTarget == target)
+            if (CurrentTarget == target)
             {
                 cinemachineTarGro.RemoveMember(CurrentTarget.transform);
                 CurrentTarget = null;

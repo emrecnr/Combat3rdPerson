@@ -82,6 +82,15 @@ namespace TP.Inputs
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""619d8301-26c0-4e1f-813a-50335ab53c06"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -249,6 +258,17 @@ namespace TP.Inputs
                     ""action"": ""Cancel"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""15a1add0-95c7-432b-ae6f-29858ff99895"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""MouseandKeyboard"",
+                    ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -291,6 +311,7 @@ namespace TP.Inputs
             m_Player_Look = m_Player.FindAction("Look", throwIfNotFound: true);
             m_Player_Target = m_Player.FindAction("Target", throwIfNotFound: true);
             m_Player_Cancel = m_Player.FindAction("Cancel", throwIfNotFound: true);
+            m_Player_Attack = m_Player.FindAction("Attack", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -358,6 +379,7 @@ namespace TP.Inputs
         private readonly InputAction m_Player_Look;
         private readonly InputAction m_Player_Target;
         private readonly InputAction m_Player_Cancel;
+        private readonly InputAction m_Player_Attack;
         public struct PlayerActions
         {
             private @InputController m_Wrapper;
@@ -368,6 +390,7 @@ namespace TP.Inputs
             public InputAction @Look => m_Wrapper.m_Player_Look;
             public InputAction @Target => m_Wrapper.m_Player_Target;
             public InputAction @Cancel => m_Wrapper.m_Player_Cancel;
+            public InputAction @Attack => m_Wrapper.m_Player_Attack;
             public InputActionMap Get() { return m_Wrapper.m_Player; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -395,6 +418,9 @@ namespace TP.Inputs
                 @Cancel.started += instance.OnCancel;
                 @Cancel.performed += instance.OnCancel;
                 @Cancel.canceled += instance.OnCancel;
+                @Attack.started += instance.OnAttack;
+                @Attack.performed += instance.OnAttack;
+                @Attack.canceled += instance.OnAttack;
             }
 
             private void UnregisterCallbacks(IPlayerActions instance)
@@ -417,6 +443,9 @@ namespace TP.Inputs
                 @Cancel.started -= instance.OnCancel;
                 @Cancel.performed -= instance.OnCancel;
                 @Cancel.canceled -= instance.OnCancel;
+                @Attack.started -= instance.OnAttack;
+                @Attack.performed -= instance.OnAttack;
+                @Attack.canceled -= instance.OnAttack;
             }
 
             public void RemoveCallbacks(IPlayerActions instance)
@@ -460,6 +489,7 @@ namespace TP.Inputs
             void OnLook(InputAction.CallbackContext context);
             void OnTarget(InputAction.CallbackContext context);
             void OnCancel(InputAction.CallbackContext context);
+            void OnAttack(InputAction.CallbackContext context);
         }
     }
 }
